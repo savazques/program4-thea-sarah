@@ -79,6 +79,7 @@ void BST::Insert(int key) {
 		lastNode->right_ = std::make_shared<BSTNode>(key, lastNode);
 	}
 	size_++;
+	//RIGHT HERE IS WHERE WE ADD
 }
 
 bool BST::Delete(int key) {
