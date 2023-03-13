@@ -243,7 +243,7 @@ int AVL :: Height (std::shared_ptr<AVLNode> node)
 	return height;
 }
 
-int AVL :: BalanceFactor (std::shared_ptr<AVLNode> node)
+int AVL::BalanceFactor (std::shared_ptr<AVLNode> node)
 {
 	int balanceFactor;
 	if (node -> IsLeaf())
@@ -287,6 +287,7 @@ void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
 
 		Height(node); 
 		BalanceFactor(node); 
+		//WE HAVE TO FIGURE OUT HOW TO CALL THE LEFT ROTATION FOR A RIGHT LEFT ROATATION
 	}
 }
 
@@ -309,5 +310,6 @@ void AVL :: leftrotation (std::shared_ptr<AVLNode> node)
 		Height(node); 
 		BalanceFactor(node); 		
 	}
+	// FIGURE OUT HOW TO CALL RIGHT ROTATION FOR A LEFT RIGTH ROTATION 
 
 }

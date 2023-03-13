@@ -10,7 +10,7 @@ int main(int argc, char** argv)
     std::ifstream commandFile (filename);
 
     nlohmann::json AVLCOMMANDS  = nlohmann::json::parse(commandFile);
-    nlohmann::json OutputJSON;
+    //nlohmann::json OutputJSON;
     nlohmann::json info; 
     AVL tree; 
 
@@ -20,8 +20,8 @@ int main(int argc, char** argv)
         {
             int value = info[it.key()]["key"]; 
             tree.Insert(value); 
-
         }
     }; 
+    std::cout<<tree.JSON()<<std::endl; 
     return 0;
 };
