@@ -2,7 +2,7 @@
 #include <string>
 #include <fstream>
 #include "json.hpp"
-#include "AVL.cpp"
+#include "AVL.h"
 
 int main(int argc, char** argv)
 {

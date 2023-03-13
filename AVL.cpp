@@ -80,10 +80,10 @@ void AVL::Insert(int key) {
 	}
 	size_++;
     
-    updateHeight(); 
-    updateBalanceFactor();
-    rightrotation(); 
-    leftrotation(); 
+    Height(currentNode); 
+    BalanceFactor(currentNode);
+    rightrotation(currentNode); 
+    leftrotation(currentNode); 
 	//RIGHT HERE IS WHERE WE ADD
 }
 
@@ -213,22 +213,67 @@ std::string AVL::JSON() const {
 	result["size"] = size_;
 	return result.dump(2) + "\n";
 }
-void AVL :: updateHeight ()
+int AVL :: Height (std::shared_ptr<AVLNode> node)
 {
-
+	int height; 
+	while (node != nullptr)
+	{
+	if(node->IsLeaf()) //if node is a leaf
+	{
+		height = 0; 
+	}
+	if(node -> HasRightChild() && node -> HasLeftChild()) //if node as both right and left child
+	{
+		//then the height is the max height of the right and left child + 1
+		height = 1 + std::max(Height(node -> left_), Height(node -> right_));
+		
+	}
+	if(node -> HasLeftChild() && !(node -> HasRightChild())) //if node has a left child but not a right child
+	{
+		height = 1 + Height(node -> left_); 
+		//then the height is the 1 + the left child height
+	}
+	if(node -> HasRightChild() && !(node -> HasLeftChild())) //if node has a right child but not a left child
+	{
+		//then the height is the 1 + right child height
+		height = 1 + Height(node -> right_); 
+	}
+ 	}
+	
+	return height;
 }
 
-void AVL :: updateBalanceFactor ()
+int AVL :: BalanceFactor (std::shared_ptr<AVLNode> node)
 {
-
+	int balanceFactor;
+	if (node -> IsLeaf())
+	{
+		balanceFactor = 0;
+	}
+	if (node -> HasLeftChild() && node -> HasRightChild()) //if node has left and right child
+	{
+		//the balance factor is the right child height - left child height
+		balanceFactor = Height(node -> right_) - Height(node -> left_); 
+	}
+	if (node -> HasLeftChild() && !(node -> HasRightChild())) // if node has only left child
+	{
+		//the balance factor is = (-1) - leftchild height
+		balanceFactor = (-1) - Height(node -> left_); 
+	}
+	if (node -> HasRightChild() && !(node -> HasLeftChild())) //if node has only right child
+	{
+		//the balancefactor is - rightchild height - (-1) or rightchild + 1
+		balanceFactor = Height(node -> right_) + 1; 
+	}
+	return balanceFactor; 
 }
 
-void AVL :: rightrotation ()
+void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
 {
-
+	if(BalanceFactor(node) > 1)
 }
 
-void AVL :: leftrotation ()
+void AVL :: leftrotation (std::shared_ptr<AVLNode> node)
 {
 
 }

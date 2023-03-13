@@ -13,6 +13,7 @@ class AVLNode {
  	bool HasRightChild() const;
  	void DeleteChild(std::shared_ptr<AVLNode> v);
  	void ReplaceChild(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
+   
 
 
  private:
@@ -35,14 +36,15 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
-    void updateHeight(); 
-    void updateBalanceFactor(); 
-    void rightrotation(); 
-    void leftrotation(); 
+    
 
  private:
 	void DeleteLeaf(std::shared_ptr<AVLNode> currentNode);
 	int DeleteMin(std::shared_ptr<AVLNode> currentNode);
+    int Height(std::shared_ptr<AVLNode> currentNode); 
+    int BalanceFactor(std::shared_ptr<AVLNode> currentNode); 
+    void rightrotation(std::shared_ptr<AVLNode> currentNode ); 
+    void leftrotation(std::shared_ptr<AVLNode>currentNode); 
 
  	std::shared_ptr<AVLNode> root_;
  	size_t size_;
