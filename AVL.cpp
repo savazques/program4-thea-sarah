@@ -271,6 +271,9 @@ int AVL :: BalanceFactor (std::shared_ptr<AVLNode> node)
 void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
 {
 	if(BalanceFactor(node) > 1)
+	{
+		
+	}
 }
 
 void AVL :: leftrotation (std::shared_ptr<AVLNode> node)
