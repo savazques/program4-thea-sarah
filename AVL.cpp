@@ -270,9 +270,23 @@ int AVL :: BalanceFactor (std::shared_ptr<AVLNode> node)
 
 void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
 {
-	if(BalanceFactor(node) > 1)
+	if(BalanceFactor(node) < -1) //if the node is left heavy we have to do a right right rotation
 	{
-		
+		std::shared_ptr<AVLNode> y = node -> left_; 
+		std::shared_ptr<AVLNode> y_ = node -> left_-> right_; 
+
+		std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
+
+		node->left_ = y_; 
+		y -> right_ = node; 
+		parent -> left_ = y; 
+
+		node -> parent_ = y; 
+		y -> parent_ = parent; 
+		y_ -> parent_ = node; 
+
+		Height(node); 
+		BalanceFactor(node); 
 	}
 }
 
