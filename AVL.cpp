@@ -292,5 +292,22 @@ void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
 
 void AVL :: leftrotation (std::shared_ptr<AVLNode> node)
 {
+	if(BalanceFactor(node) > 1)
+	{
+		std::shared_ptr<AVLNode> y = node -> right_; 
+		std::shared_ptr<AVLNode> y_ = node -> right_ -> left_; 
+		std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
+
+		node -> right_ = y_; 
+		y -> left_ = node; 
+		parent -> right_ = y; 
+
+		node -> parent_ = y; 
+		y -> parent_ = parent; 
+		y_ -> parent_ = node; 
+
+		Height(node); 
+		BalanceFactor(node); 		
+	}
 
 }
