@@ -1,3 +1,17 @@
+// what we need to do 
+/* 
+- add the find balance factor and height class methods 
+- bascially update all nodes' hight and balance factors 
+    - and we do a method for that. (in avl) 
+- for pointers: 
+    to do is to look at the BST stuff to see how it works 
+
+- the only time that we care about lock is when wee have to move up to the parent node and find 
+    the balance factor or height of that parent node 
+            - so like to search the AVL tree up basically 
+
+*/
+
 #include <memory>
 #include <string>
 
@@ -13,6 +27,8 @@ class AVLNode {
  	bool HasRightChild() const;
  	void DeleteChild(std::shared_ptr<AVLNode> v);
  	void ReplaceChild(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> u);
+	int height;
+  	int balance_factor;
    
 
 
@@ -36,16 +52,16 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
-
+	int Height(std::shared_ptr<AVLNode> currentNode); 
+    int BalanceFactor(std::shared_ptr<AVLNode> currentNode); 
+    void rightrotation(std::shared_ptr<AVLNode> currentNode ); 
+    void leftrotation(std::shared_ptr<AVLNode>currentNode);
     
 
  private:
 	void DeleteLeaf(std::shared_ptr<AVLNode> currentNode);
 	int DeleteMin(std::shared_ptr<AVLNode> currentNode);
-    int Height(std::shared_ptr<AVLNode> currentNode); 
-    int BalanceFactor(std::shared_ptr<AVLNode> currentNode); 
-    void rightrotation(std::shared_ptr<AVLNode> currentNode ); 
-    void leftrotation(std::shared_ptr<AVLNode>currentNode); 
+    
 
  	std::shared_ptr<AVLNode> root_;
  	size_t size_;
