@@ -80,7 +80,7 @@ void AVL::Insert(int key) {
 	}
 	size_++;
     
-    Height(currentNode); 
+    Height(lastNode); 
     BalanceFactor(currentNode);
     rightrotation(currentNode); 
     leftrotation(currentNode); 
@@ -215,30 +215,35 @@ std::string AVL::JSON() const {
 }
 int AVL :: Height (std::shared_ptr<AVLNode> node)
 {
+	 std::shared_ptr<AVLNode> p_ = node -> parent_.lock(); 
+	 std::cout<<"entering height"<<std::endl;
+	
 	int height; 
-	while (node != nullptr)
+	while (p_ != nullptr)
 	{
-	if(node->IsLeaf()) //if node is a leaf
+	if(p_->IsLeaf()) //if node is a leaf
 	{
+		std::cout<< "is leaf" << std:: endl; 
 		height = 0; 
 	}
-	if(node -> HasRightChild() && node -> HasLeftChild()) //if node as both right and left child
+	if(p_ -> HasRightChild() && p_ -> HasLeftChild()) //if node as both right and left child
 	{
 		//then the height is the max height of the right and left child + 1
-		height = 1 + std::max(Height(node -> left_), Height(node -> right_));
+		height = 1 + std::max(Height(p_ -> left_), Height(p_-> right_));
 		
 	}
-	if(node -> HasLeftChild() && !(node -> HasRightChild())) //if node has a left child but not a right child
+	if(p_ -> HasLeftChild() && !(p_ -> HasRightChild())) //if node has a left child but not a right child
 	{
-		height = 1 + Height(node -> left_); 
+		height = 1 + Height(p_ -> left_); 
 		//then the height is the 1 + the left child height
 	}
-	if(node -> HasRightChild() && !(node -> HasLeftChild())) //if node has a right child but not a left child
+	if(p_ -> HasRightChild() && !(p_ -> HasLeftChild())) //if node has a right child but not a left child
 	{
 		//then the height is the 1 + right child height
-		height = 1 + Height(node -> right_); 
+		height = 1 + Height(p_ -> right_); 
 	}
  	}
+	height = -1; 
 	
 	return height;
 }

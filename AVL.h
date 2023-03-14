@@ -36,6 +36,7 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
+
     
 
  private:
