@@ -81,9 +81,11 @@ void AVL::Insert(int key) {
 	size_++;
     
     Height(lastNode); 
-    BalanceFactor(currentNode);
-    rightrotation(currentNode); 
-    leftrotation(currentNode); 
+	std::cout<<"hello"<<std::endl; 
+    BalanceFactor(lastNode);
+	std::cout<<"hi"<<std::endl; 
+    rightrotation(lastNode); 
+    leftrotation(lastNode); 
 	//RIGHT HERE IS WHERE WE ADD
 }
 
@@ -219,58 +221,62 @@ int AVL :: Height (std::shared_ptr<AVLNode> node)
 	
 	while (node!= nullptr)
 	{
-		
 	if(node->IsLeaf()) //if node is a leaf
-	{
-		std::cout<< "is leaf" << std:: endl; 
+	{ 
+		std::cout<<"leaf"<<std::endl;
 		node->height = 0; 
 	}
-	if(node -> HasRightChild() && node -> HasLeftChild()) //if node as both right and left child
+	if((node -> HasRightChild()) && node -> HasLeftChild()) //if node as both right and left child
 	{
 		//then the height is the max height of the right and left child + 1
-		node -> height = 1 + std::max(Height(node -> left_), Height(node-> right_));
-		std::cout<<"not leaf"<<std::endl; 
+		std::cout << "two children" <<std::endl; 
+		int hieghLef = Height(node -> left_); 
+		int heightRight = Height(node -> right_); 
+		node -> height = 1 + std::max(hieghLef, heightRight); 
 	}
-	if(node -> HasLeftChild() && !(node -> HasRightChild())) //if node has a left child but not a right child
+	if((node -> HasLeftChild()) && !(node -> HasRightChild())) //if node has a left child but not a right child
 	{
+		std::cout<<"left child"<<std::endl;
 		node -> height = 1 + Height(node-> left_); 
+		
 		//then the height is the 1 + the left child height
 	}
 	if(node -> HasRightChild() && !(node -> HasLeftChild())) //if node has a right child but not a left child
 	{
+		std::cout<< "right child"<<std::endl; 
 		//then the height is the 1 + right child height
 		node -> height = 1 + Height(node -> right_); 
 	}
 	node = node->parent_.lock();
  	};
-	node -> height = -1; 
+	
 	
 	return node -> height;
 }
 
 int AVL::BalanceFactor (std::shared_ptr<AVLNode> node)
 {
-	int balanceFactor;
+	
 	if (node -> IsLeaf())
 	{
-		balanceFactor = 0;
+		node->balance_factor = 0;
 	}
 	if (node -> HasLeftChild() && node -> HasRightChild()) //if node has left and right child
 	{
 		//the balance factor is the right child height - left child height
-		balanceFactor = Height(node -> right_) - Height(node -> left_); 
+		node -> balance_factor = Height(node -> right_) - Height(node -> left_); 
 	}
 	if (node -> HasLeftChild() && !(node -> HasRightChild())) // if node has only left child
 	{
 		//the balance factor is = (-1) - leftchild height
-		balanceFactor = (-1) - Height(node -> left_); 
+		node -> balance_factor = (-1) - Height(node -> left_); 
 	}
 	if (node -> HasRightChild() && !(node -> HasLeftChild())) //if node has only right child
 	{
 		//the balancefactor is - rightchild height - (-1) or rightchild + 1
-		balanceFactor = Height(node -> right_) + 1; 
+		node -> balance_factor = Height(node -> right_) + 1; 
 	}
-	return balanceFactor; 
+	return node -> balance_factor; 
 }
 
 void AVL :: rightrotation (std::shared_ptr<AVLNode> node)
