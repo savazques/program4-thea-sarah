@@ -1,13 +1,13 @@
 // what we need to do 
 /* 
-- add the find balance factor and height class methods 
+- add the find balance factor and UpdateHeight class methods 
 - bascially update all nodes' hight and balance factors 
     - and we do a method for that. (in avl) 
 - for pointers: 
     to do is to look at the BST stuff to see how it works 
 
 - the only time that we care about lock is when wee have to move up to the parent node and find 
-    the balance factor or height of that parent node 
+    the balance factor or UpdateHeight of that parent node 
             - so like to search the AVL tree up basically 
 
 */
@@ -52,8 +52,8 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
-	int Height(std::shared_ptr<AVLNode> currentNode); 
-    int BalanceFactor(std::shared_ptr<AVLNode> currentNode); 
+	int UpdateHeight(std::shared_ptr<AVLNode> currentNode); 
+    int UpdateBalanceFactor(std::shared_ptr<AVLNode> currentNode); 
     void rightrotation(std::shared_ptr<AVLNode> currentNode ); 
     void leftrotation(std::shared_ptr<AVLNode>currentNode);
     
