@@ -18,11 +18,10 @@ int main(int argc, char** argv)
         if(it.key() != "metadata")
         {
             int value = AVLCOMMANDS[it.key()]["key"]; 
-            std::cout << value << std::endl; 
-            tree.Insert(value); 
-            std::cout << "this is the root = " << tree.root_ << std::endl; 
+            std::cout<< value<<std::endl; 
+            tree.Insert(value);  
         }
     }; 
-    std::cout<<tree.JSON()<<std::endl; 
+   // std::cout<<tree.JSON()<<std::endl; 
     return 0;
 };
