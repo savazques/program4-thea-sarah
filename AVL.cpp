@@ -63,6 +63,8 @@ AVL::AVL() : root_(nullptr), size_(0) {}
 
 void AVL::Insert(int key) {
 	if (root_ == nullptr) {
+
+        std::cout<< "checking if the root is null" << std::endl;
 		root_ = std::make_shared<AVLNode>(key);
 		size_++;
 		return;
@@ -79,11 +81,12 @@ void AVL::Insert(int key) {
 		lastNode->right_ = std::make_shared<AVLNode>(key, lastNode);
 	}
 	size_++;
-    std::cout<<"have not entered height"<<std::endl; 
+
+
+    std::cout<<"node in insert" << lastNode -> key_<<std::endl; 
     UpdateHeight(lastNode); 
-	std::cout<<"hello"<<std::endl; 
     UpdateBalanceFactor(lastNode);
-	std::cout<<"hi"<<std::endl; 
+ 
     // rightrotation(lastNode); 
     // leftrotation(lastNode); 
 	//RIGHT HERE IS WHERE WE ADD
@@ -221,19 +224,21 @@ int AVL :: UpdateHeight (std::shared_ptr<AVLNode> node)
 	while (node!= nullptr)
 	{
 		std::cout<<"in while"<<std::endl; 
+
 		if(node->IsLeaf()) //if node is a leaf
 		{ 
+			std::cout<<"in leaf condition"<<std::endl; 
 			node->height = 0; 
 		}
 		if((node -> HasRightChild()) && (node -> HasLeftChild())) //if node as both right and left child
 		{
 			//then the UpdateHeight is the max UpdateHeight of the right and left child + 1
-			node -> height = 1 + std::max(node -> left_ -> height, node -> right_ -> height); 
+			node -> height = 1 + std::max((node -> left_) -> height, (node -> right_) -> height); 
 		}
 		if((node -> HasLeftChild()) && !(node -> HasRightChild())) //if node has a left child but not a right child
 		{
 			
-			node -> height = 1 + (node -> left_ -> height); 
+			node -> height = 1 + ((node -> left_) -> height); 
 			
 			//then the UpdateHeight is the 1 + the left child UpdateHeight
 		}
@@ -241,10 +246,11 @@ int AVL :: UpdateHeight (std::shared_ptr<AVLNode> node)
 		{
 			
 			//then the UpdateHeight is the 1 + right child UpdateHeight
-			node -> height = 1 + (node -> right_ -> height); 
+			node -> height = 1 + ((node -> right_) -> height); 
 		}
 		node = node->parent_.lock();
  	};
+	
 	
 	return node -> height;
 }

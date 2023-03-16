@@ -57,12 +57,13 @@ class AVL{
     void rightrotation(std::shared_ptr<AVLNode> currentNode ); 
     void leftrotation(std::shared_ptr<AVLNode>currentNode);
     
-
+    std::shared_ptr<AVLNode> root_;
+ 	size_t size_;
+    
  private:
 	void DeleteLeaf(std::shared_ptr<AVLNode> currentNode);
 	int DeleteMin(std::shared_ptr<AVLNode> currentNode);
     
 
- 	std::shared_ptr<AVLNode> root_;
- 	size_t size_;
+
 }; // class AVL
