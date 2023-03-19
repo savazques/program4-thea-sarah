@@ -1,7 +1,10 @@
 #include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string>
 #include <fstream>
 #include "json.hpp"
+#include "BST.h"
 #include "AVL.h"
 
 int main(int argc, char** argv)
@@ -20,9 +23,21 @@ int main(int argc, char** argv)
             int value = AVLCOMMANDS[it.key()]["key"]; 
             std::cout << value << std::endl; 
             tree.Insert(value); 
-            std::cout << "this is the root = " << tree.root_ << std::endl; 
+      
         }
     }; 
-    std::cout<<tree.JSON()<<std::endl; 
+    // BST myTree; 
+
+
+    // myTree.Insert(3); 
+    // myTree.Insert(4); 
+    // myTree.Insert(1); 
+    // myTree.Insert(9); 
+    // myTree.Insert(6);
+
+
+    
+    
+
     return 0;
 };
