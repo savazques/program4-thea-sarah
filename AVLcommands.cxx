@@ -22,7 +22,9 @@ int main(int argc, char** argv)
         if(it.key() != "metadata")
         {
             int value = AVLCOMMANDS[it.key()]["key"]; 
+            std::cout<<"before inserting a vlaue in main"<<std::endl;
             tree.Insert(value); 
+            std::cout<<"after insertinga value in main "<<std::endl;
       
         }
     }; 

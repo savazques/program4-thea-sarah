@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <queue>
+#include <stdlib.h>
 
 #include "json.hpp"
 
@@ -62,35 +63,73 @@ void AVLNode::ReplaceChild(std::shared_ptr<AVLNode> v, std::shared_ptr<AVLNode> 
 AVL::AVL() : root_(nullptr), size_(0) {}
 
 void AVL::Insert(int key) {
+    std::cout<<"insert just started"<<std::endl;
 	if (root_ == nullptr) {
 
     //    std::cout<< "checking if the root is null" << std::endl;
 		root_ = std::make_shared<AVLNode>(key);
+        root_ -> left_ = nullptr; 
+        root_ -> right_ = nullptr; 
 		size_++;
 		return;
 	}
+
+    std::cout<<"after some root stuff"<<std::endl;
 	std::shared_ptr<AVLNode> currentNode = root_, lastNode = nullptr;
 	while (currentNode != nullptr) {
+        std::cout<<"in a ahile loop"<<std::endl;
+
 		lastNode = currentNode;
-		currentNode = (key < currentNode->key_) ?
-			currentNode->left_ : currentNode->right_;
+        std::cout<<"underneath"<<std::endl;
+        if (currentNode->key_ > key){
+            std::cout<<"and under"<<std::endl;
+            std::shared_ptr<AVLNode> temp1 = currentNode->left_;
+            currentNode = temp1;
+            std::cout << "the if statment left node is" << currentNode->key_ << std::endl; 
+
+            std::cout<<"IF"<<std::endl;
+        }
+        else{ 
+            std::cout<<"and over"<<std::endl;
+            std::shared_ptr<AVLNode> temp2 = currentNode->right_;
+            currentNode = temp2;
+            std::cout << "the if statment right node is" << currentNode->key_ << std::endl;
+            std::cout<<"ELSE"<<std::endl;
+        }
+		// currentNode = (key < currentNode->key_) ?
+		// 	currentNode->left_ : currentNode->right_;
 	}
+    std::cout<<"before some ifs "<<std::endl;
 	if (key < lastNode->key_) {
+        std::cout<<"in the if"<<std::endl;
 		lastNode->left_ = std::make_shared<AVLNode>(key, lastNode);
+        lastNode->left_->right_ = nullptr; 
+        lastNode->left_->left_ = nullptr;
 	} else {
+        std::cout<<"in that else"<<std::endl;
 		lastNode->right_ = std::make_shared<AVLNode>(key, lastNode);
+        lastNode->right_->right_ = nullptr;
+        lastNode->right_->left_ = nullptr;
 	}
 	size_++;
+    std::cout<<"insert just started"<<std::endl;
 
     std::cout << "line 85" << std::endl; 
 
     UpdateHeightandBalanceFactor(root_); 
 
-    std::shared_ptr<AVLNode> problemNode = findProblemNode(); 
+   nlohmann::json jsonObj = JSONother(); 
 
-    RotateTree(problemNode, problemNode -> balance_factor); 
+    std::shared_ptr<AVLNode> problemNode = findProblemNode(jsonObj); 
 
+    if (problemNode != nullptr){
+        std::cout << "\n\n HERE IS THE BALANCE FACTOR WE ARE SENDING THRU \n\n" << problemNode->balance_factor << "\n\n\n" << std::endl; 
+        RotateTree(problemNode, problemNode->balance_factor); 
+    }
 
+    std::cout<<"we out"<<std::endl;
+
+    return; 
 }
 
 bool AVL::Delete(int key) {
@@ -191,6 +230,20 @@ bool AVL::Find(int key) const {
 	return false;
 }
 
+std::shared_ptr<AVLNode> AVL::Give(int key)  {
+	std::shared_ptr<AVLNode> currentNode = root_;
+	while (currentNode != nullptr) {
+		if (currentNode->key_ == key) {
+			return currentNode;
+		}
+		currentNode = (key < currentNode->key_) ?
+			currentNode->left_ : currentNode->right_;
+	}
+}
+
+
+
+
 std::string AVL::JSON() const {
 	nlohmann::json result;
 	std::queue< std::shared_ptr<AVLNode> > nodes;
@@ -223,24 +276,7 @@ std::string AVL::JSON() const {
 	return result.dump(2) + "\n";
 }
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-std::shared_ptr<AVLNode> AVL::findProblemNode() {
+nlohmann::json AVL::JSONother()  {
 	nlohmann::json result;
 	std::queue< std::shared_ptr<AVLNode> > nodes;
 	if (root_ != nullptr) {
@@ -265,15 +301,112 @@ std::shared_ptr<AVLNode> AVL::findProblemNode() {
 			}
 
             result[key]["balance factor"] = v -> balance_factor; 
-            if ( v -> balance_factor > 1) { 
-                return v; 
-            }
-
             result[key]["height"] = v -> height;
 		}
 	}
+	result["size"] = size_;
+	return result;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::shared_ptr<AVLNode> AVL::findProblemNode(nlohmann::json jsonData) 
+{
+
+    std::cout << "this is here before anything" << std::endl; 
+
+    int myKey = NULL; 
+
+
+    std::cout << "this is here after ny key is nukl " << std::endl; 
+
+    for (auto it = jsonData.begin(); it != jsonData.end(); ++it)
+    {
+
+        std::cout << "this is here after i begin iteration " << std::endl; 
+        if( it.key() != "height" && it.key() != "root" && it.key() != "size")
+        {   
+
+        std::cout << "this is here given iterator is not metadata" << std::endl; 
+            //std::string currentBFstring = jsonData[it.key()]["balance factor"];
+            //int currentBF = std::stoi(currentBFstring);
+
+            int currentBF = jsonData[it.key()]["balance factor"];
+
+            std::cout << "this is here right after current bf qeuals a number " << std::endl; 
+            if (std::abs(currentBF) > 1)
+            {
+                
+                std::cout << "this is here if the current bf is counted " << std::endl; 
+                std::string theString = it.key();
+                myKey = std::stoi(theString); 
+            }
+        }
+    }
+
+    std::cout << "this is here before the retuns " << std::endl; 
+    if (myKey == NULL) 
+    { 
+        std::cout << "nothing happened" << std::endl; 
+        return nullptr; 
+    }
+    else 
+    {
+        return Give(myKey); 
+    }
+
 
 }
+
+
+
+
+// 	std::queue< std::shared_ptr<AVLNode> > nodes;
+// 	if (root_ != nullptr) {
+// 		nodes.push(root_);
+// 		while (!nodes.empty()) {
+// 			std::shared_ptr<AVLNode> v = nodes.front();
+// 			nodes.pop();
+// 			std::string key = std::to_string(v->key_);
+//             int currentBF = v-> balance_factor; 
+//             if (std::abs(currentBF) > 1 ) { 
+//                 return v; 
+//             }
+// 	}
+
+//     return nullptr; 
+
+//     }
+// }
+
+
+
+// std::shared_ptr<AVLNode> AVL::findProblemNode(std::shared_ptr<AVLNode> currentNode)  {
+// 	while (currentNode != nullptr) {
+// 		if ((std::abs(currentNode->balance_factor)) > 1) {
+// 			return currentNode;
+// 		}
+//         findProblemNode(currentNode->left_);
+//         findProblemNode(currentNode->right_);
+//     }
+//     if (currentNode == nullptr) { 
+//         findProblemNode(currentNode->parent_.lock());
+//     }
+// 	return nullptr;
+// }
 
 
 
@@ -319,12 +452,12 @@ int AVL :: UpdateHeightandBalanceFactor (std::shared_ptr<AVLNode> node)
     
         std::cout << "the nodes balance factor right before the abs check is  " << node-> balance_factor << std::endl; 
         std::cout << "the nodes hieght right before the abs check is  " << node-> height << std::endl;
-		if(std::abs(bf) > 1)
-		{
-            RotateTree(node, bf); 
-           // UpdateHeightandBalanceFactor(root_); 
+		// if(std::abs(bf) > 1)
+		// {
+        //     RotateTree(node, bf); 
+        //    // UpdateHeightandBalanceFactor(root_); 
 
-		}
+		// }
 	}
 
     std::cout << "the nodes balance factor at this time is " << node-> balance_factor << std::endl; 
@@ -353,41 +486,37 @@ void AVL :: RotateTree(std::shared_ptr<AVLNode> node, int bf)
 	if (bf > 1)
 	{
 		std::shared_ptr<AVLNode> rightNode = node -> right_;
-		int rightleftheight = UpdateHeightandBalanceFactor(rightNode-> left_); 
-		int rightrightheight = UpdateHeightandBalanceFactor(rightNode -> right_);
-		int Rbf = (rightrightheight - rightleftheight); 
-		std::cout<<Rbf<< std::endl; 
-       
-		std::cout<<"we have a right heavy tree"<<std::endl;
-		if (bf == 1)
+
+		if (rightNode -> balance_factor == 1)
 		{
 			std::cout<<"we have a rigt right prblm"<<std::endl; 
 			LLrotation(node); 
 		}
-		if (bf  == -1)
+		if (rightNode -> balance_factor == -1)
 		{
 			std::cout<<"we have a  left right problem"<<std::endl;
 			LRrotation(node);   
 		}
 	}
+    std::cout<<"in between the two "<<std::endl;
 	if (bf  < -1)
 	{
 		std::shared_ptr<AVLNode> leftNode = node -> left_; 
-		int leftleftheight = UpdateHeightandBalanceFactor(leftNode-> left_); 
-		int leftrightheight = UpdateHeightandBalanceFactor(leftNode -> right_);
-		int Lbf = (leftrightheight - leftleftheight); 
-		std::cout<<Lbf<<std::endl; 
-		if(bf == 1)
+		
+		if(leftNode->balance_factor == 1)
 		{
             std::cout << "we have a right left problem" << std::endl; 
 			RLrotation(node); 
 		}
-		if(bf == -1)
+		if(leftNode->balance_factor == -1)
 		{
             std::cout << "we have a rr rotation problem" << std::endl; 
 			RRrotation(node); 
 		}
 	}
+    std::cout<<"right before return "<<std::endl;
+
+    return; 
 	
 }
 
@@ -450,7 +579,7 @@ void AVL :: RRrotation (std::shared_ptr<AVLNode> node)
 				y -> parent_ = parent; 
 			}
 		}
-UpdateHeightandBalanceFactor(y); 
+//UpdateHeightandBalanceFactor(y); 
 	
 }
 
@@ -459,10 +588,13 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 {
 	std::cout<<"left left"<<std::endl; 
 	std::shared_ptr<AVLNode> y = node -> right_; 
+    std::cout<<"after y is assigned"<<std::endl;
 	if(node == root_)
 	{
+            std::cout<<"ly is the root"<<std::endl;
 		    if(y -> left_ != nullptr)
 			{
+                std::cout<<"so y does indeed have a left child"<<std::endl;
 				std::shared_ptr<AVLNode> y_ = y->left_; 
 				y_ -> parent_.reset(); 
 				y -> parent_.reset(); 
@@ -476,7 +608,8 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 			}
 			else
 			{
-				y -> parent_.reset(); 
+				std::cout<<"y does not have a left shild "<<std::endl;
+                y -> parent_.reset(); 
 				root_ = y; 
 				y -> left_ = node;
 				node -> parent_ = y; 
@@ -487,9 +620,12 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 	
 	if(node != root_)
 	{
+
+        std::cout<<"ndoe is not the root"<<std::endl;
 		std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
 		if(y -> left_ != nullptr)
 		{
+            std::cout<<"y does indeed have a left child"<<std::endl;
 			std::shared_ptr<AVLNode> y_ = y->left_; 
             y_ -> parent_.reset(); 
             y -> parent_.reset(); 
@@ -506,6 +642,7 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 		}
 		else
 		{
+            std::cout<<"y does not have a left child"<<std::endl;
 			y -> parent_.reset(); 
 			node -> parent_.reset(); 
 			y -> left_ = node;
@@ -514,7 +651,9 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 			y -> parent_ = parent; 
 		}
 	}
-UpdateHeightandBalanceFactor(y); 
+
+    std::cout<<"end of left left"<<std::endl;
+//UpdateHeightandBalanceFactor(y); 
 }
 
 void AVL::LRrotation(std::shared_ptr<AVLNode> node)

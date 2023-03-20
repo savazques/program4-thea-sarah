@@ -14,6 +14,7 @@
 
 #include <memory>
 #include <string>
+#include "json.hpp"
 
 class AVL;
 
@@ -49,6 +50,7 @@ class AVL{
  	bool Delete(int key);
  	bool Find(int key) const;
  	std::string JSON() const;
+    nlohmann::json JSONother() ;
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
@@ -59,7 +61,9 @@ class AVL{
 	void LLrotation(std::shared_ptr<AVLNode>currentNode);
 	void LRrotation(std::shared_ptr<AVLNode>currentNode);
 
-    std::shared_ptr<AVLNode> findProblemNode(); 
+    std::shared_ptr<AVLNode> Give(int key);
+
+    std::shared_ptr<AVLNode> findProblemNode(nlohmann::json jsonData);
     
     std::shared_ptr<AVLNode> root_;
  	size_t size_;

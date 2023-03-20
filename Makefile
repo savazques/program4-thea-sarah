@@ -15,7 +15,7 @@ BSTSanityCheck: BSTSanityCheck.cxx BST.o
 BST.o: BST.cpp BST.h
 	$(CC) $(DEV) -c BST.cpp
 
-AVL.o: AVL.cpp AVL.h
+AVL.o: AVL.cpp AVL.h 
 	$(CC) $(DEV) -c AVL.cpp
 
 AVLcommands: AVLcommands.cxx  AVL.o
