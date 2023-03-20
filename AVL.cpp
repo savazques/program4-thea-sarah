@@ -85,6 +85,12 @@ void AVL::Insert(int key) {
     std::cout << "line 85" << std::endl; 
 
     UpdateHeightandBalanceFactor(root_); 
+
+    std::shared_ptr<AVLNode> problemNode = findProblemNode(); 
+
+    RotateTree(problemNode, problemNode -> balance_factor); 
+
+
 }
 
 bool AVL::Delete(int key) {
@@ -218,10 +224,82 @@ std::string AVL::JSON() const {
 }
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+std::shared_ptr<AVLNode> AVL::findProblemNode() {
+	nlohmann::json result;
+	std::queue< std::shared_ptr<AVLNode> > nodes;
+	if (root_ != nullptr) {
+		result["root"] = root_->key_;
+		nodes.push(root_);
+		while (!nodes.empty()) {
+			auto v = nodes.front();
+			nodes.pop();
+			std::string key = std::to_string(v->key_);
+			if (v->left_ != nullptr) {
+				result[key]["left"] = v->left_->key_;
+				nodes.push(v->left_);
+			}
+			if (v->right_ != nullptr) {
+				result[key]["right"] = v->right_->key_;
+				nodes.push(v->right_);
+			}
+			if (v->parent_.lock() != nullptr) {
+				result[key]["parent"] = v->parent_.lock()->key_;
+			} else {
+				result[key]["root"] = true;
+			}
+
+            result[key]["balance factor"] = v -> balance_factor; 
+            if ( v -> balance_factor > 1) { 
+                return v; 
+            }
+
+            result[key]["height"] = v -> height;
+		}
+	}
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 int AVL :: UpdateHeightandBalanceFactor (std::shared_ptr<AVLNode> node)
 {
-
-    
 
 	if(node == nullptr)
 	{
