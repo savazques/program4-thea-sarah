@@ -52,8 +52,8 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
-	int UpdateHeightandBalanceFactor(std::shared_ptr<AVLNode>); 
-    void RotateTree(std::shared_ptr<AVLNode> currentNode, int balanceFactor); 
+	void UpdateHeightandBalanceFactor(std::shared_ptr<AVLNode>); 
+    void RotateTree(std::shared_ptr<AVLNode> currentNode); 
     void RRrotation(std::shared_ptr<AVLNode> currentNode); 
     void RLrotation(std::shared_ptr<AVLNode>currentNode);
 	void LLrotation(std::shared_ptr<AVLNode>currentNode);
