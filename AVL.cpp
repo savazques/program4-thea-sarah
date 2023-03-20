@@ -82,9 +82,10 @@ void AVL::Insert(int key) {
 	}
 	size_++;
 
-    std::cout << "line 85" << std::endl; 
 
-    UpdateHeightandBalanceFactor(root_); 
+    UpdateHeightandBalanceFactor(lastNode); 
+	RotateTree(lastNode); 
+
 }
 
 bool AVL::Delete(int key) {
@@ -214,103 +215,99 @@ std::string AVL::JSON() const {
 		}
 	}
 	result["size"] = size_;
+	result["height"] = 3;
 	return result.dump(2) + "\n";
 }
 
 
-int AVL :: UpdateHeightandBalanceFactor (std::shared_ptr<AVLNode> node)
+void AVL :: UpdateHeightandBalanceFactor (std::shared_ptr<AVLNode> node)
 {
-
-    
-
-	if(node == nullptr)
-	{
-        return -1; 
-	}
+if(node != nullptr)
+{
 	if(node -> IsLeaf())
 	{
-        return 0; 
+		node -> height = 0; 
+		node -> balance_factor = 0; 
 	}
-	else
-	{
-		int rightHeight = UpdateHeightandBalanceFactor(node->right_); 
-		int leftHeight = UpdateHeightandBalanceFactor(node->left_); 
-		int bf = rightHeight - leftHeight; 
-        node -> balance_factor = bf;
-		node -> height = std::max(rightHeight , leftHeight ) + 1 ;
-    
-        std::cout << "the nodes balance factor right before the abs check is  " << node-> balance_factor << std::endl; 
-        std::cout << "the nodes hieght right before the abs check is  " << node-> height << std::endl;
-		if(std::abs(bf) > 1)
+	else{
+		if(node -> HasLeftChild() && node -> HasRightChild())
 		{
-            RotateTree(node, bf); 
-           // UpdateHeightandBalanceFactor(root_); 
-
+			int rheight = node -> right_ -> height; 
+			int lheight = node -> left_ -> height; 
+			node -> height = std::max(rheight, lheight) + 1; 
+			node -> balance_factor = node -> right_ -> height - node -> left_ -> height; 
+		}
+		else if (node -> HasLeftChild())
+		{
+			node -> height = (node -> left_ -> height) +1; 
+			node -> balance_factor = -1 - (node -> left_ -> height); 
+		}
+		else if(node -> HasRightChild())
+		{
+			node -> height = (node -> right_ -> height) + 1;
+			node -> balance_factor = (node -> right_ -> height) + 1;  
+		}
+		else 
+		{
+			std::cerr <<"error with bf and height"<<std::endl; 
 		}
 	}
-
-    std::cout << "the nodes balance factor at this time is " << node-> balance_factor << std::endl; 
-    std::cout << "the nodes height at this time is " << node-> height<< std::endl;
-
-	return node -> height;
-
-    
+	UpdateHeightandBalanceFactor(node -> parent_.lock()); 
 }
 
-
-
-void AVL :: RotateTree(std::shared_ptr<AVLNode> node, int bf)
-{
-	std::cout<< "entering rotate"<<std::endl;
-    
-
-
-    std::cout<< "before assinging right node"<<std::endl;
-    
-    std::cout<< "before assinging left balance factor" <<std::endl;
-
-    std::cout<< "before assinging right balance facotr" <<std::endl;
-
-    std::cout<< "entering rotate"<<std::endl;
-	if (bf > 1)
-	{
-		std::shared_ptr<AVLNode> rightNode = node -> right_;
-		int rightleftheight = UpdateHeightandBalanceFactor(rightNode-> left_); 
-		int rightrightheight = UpdateHeightandBalanceFactor(rightNode -> right_);
-		int Rbf = (rightrightheight - rightleftheight); 
-		std::cout<<Rbf<< std::endl; 
-       
-		std::cout<<"we have a right heavy tree"<<std::endl;
-		if (bf == 1)
-		{
-			std::cout<<"we have a rigt right prblm"<<std::endl; 
-			LLrotation(node); 
-		}
-		if (bf  == -1)
-		{
-			std::cout<<"we have a  left right problem"<<std::endl;
-			LRrotation(node);   
-		}
-	}
-	if (bf  < -1)
-	{
-		std::shared_ptr<AVLNode> leftNode = node -> left_; 
-		int leftleftheight = UpdateHeightandBalanceFactor(leftNode-> left_); 
-		int leftrightheight = UpdateHeightandBalanceFactor(leftNode -> right_);
-		int Lbf = (leftrightheight - leftleftheight); 
-		std::cout<<Lbf<<std::endl; 
-		if(bf == 1)
-		{
-            std::cout << "we have a right left problem" << std::endl; 
-			RLrotation(node); 
-		}
-		if(bf == -1)
-		{
-            std::cout << "we have a rr rotation problem" << std::endl; 
-			RRrotation(node); 
-		}
-	}
+	return; 
 	
+	
+}
+
+void AVL :: RotateTree(std::shared_ptr<AVLNode> node)
+{
+
+	if(node != nullptr)
+	{
+		//std::cout << "the bf of right node is" << node -> right_ -> balance_factor <<std::endl; 
+		//std::cout<<"the bf pf left node is "<<node ->left_ -> balance_factor <<std::endl; 
+			if(std::abs(node->balance_factor) > 1)
+			{
+				if (node -> balance_factor == 2)
+					{
+						std::shared_ptr<AVLNode> rightNode = node -> right_;
+						if (node -> right_ -> balance_factor == 1)
+						{
+							
+							this -> LLrotation(node); 
+							//std::cout<<"we have exited LL"<<std::endl; 
+						}
+						if (node -> right_ -> balance_factor  == -1)
+						{
+							this -> LRrotation(node);  
+							 
+						}
+					}
+				else if (node -> balance_factor == -2)
+						{
+							if( node -> left_ -> balance_factor == 1)
+							{
+								this -> RLrotation(node);  
+								
+							}
+							if(node -> left_-> balance_factor == -1)
+							{ 
+								this -> RRrotation(node); 
+								
+							}
+						}
+				else
+				{
+					UpdateHeightandBalanceFactor(node -> parent_.lock()); 
+					RotateTree(node ->parent_.lock()); 
+
+				}
+						
+			}
+	
+	}
+
 }
 
 void AVL :: RRrotation (std::shared_ptr<AVLNode> node)
@@ -319,7 +316,7 @@ void AVL :: RRrotation (std::shared_ptr<AVLNode> node)
 		std::shared_ptr<AVLNode> y = node -> left_; //left child of node 
 
         if (node == root_) { 
-            if(y -> right_ != nullptr)
+            if(y -> HasRightChild())
 			{
 				std::shared_ptr<AVLNode> y_ = y->right_; 
 				y_ -> parent_.reset(); 
@@ -346,13 +343,12 @@ void AVL :: RRrotation (std::shared_ptr<AVLNode> node)
 		{
             std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
             
-			if(y -> right_ != nullptr)
+			if(y -> HasRightChild())
 			{
 				std::shared_ptr<AVLNode> y_ = y->right_; 
 				y_ -> parent_.reset(); 
 				y -> parent_.reset(); 
 				node->left_ = y_; 
-				//here 
 				y -> parent_ = parent;
 				node -> parent_.reset(); 
 
@@ -372,18 +368,18 @@ void AVL :: RRrotation (std::shared_ptr<AVLNode> node)
 				y -> parent_ = parent; 
 			}
 		}
-UpdateHeightandBalanceFactor(y); 
+	//UpdateHeightandBalanceFactor(node -> parent_.lock()); 
 	
 }
 
 
 void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 {
-	std::cout<<"left left"<<std::endl; 
+	
 	std::shared_ptr<AVLNode> y = node -> right_; 
 	if(node == root_)
 	{
-		    if(y -> left_ != nullptr)
+		    if(y -> HasLeftChild())
 			{
 				std::shared_ptr<AVLNode> y_ = y->left_; 
 				y_ -> parent_.reset(); 
@@ -404,14 +400,14 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 				node -> parent_ = y; 
                 node -> right_ = nullptr; 
 			}
-
 	}
 	
 	if(node != root_)
 	{
 		std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
-		if(y -> left_ != nullptr)
+		if(y -> HasLeftChild())
 		{
+	
 			std::shared_ptr<AVLNode> y_ = y->left_; 
             y_ -> parent_.reset(); 
             y -> parent_.reset(); 
@@ -436,20 +432,19 @@ void AVL :: LLrotation (std::shared_ptr<AVLNode> node)
 			y -> parent_ = parent; 
 		}
 	}
-UpdateHeightandBalanceFactor(y); 
+
+//UpdateHeightandBalanceFactor(node->parent_.lock()); 
 }
 
 void AVL::LRrotation(std::shared_ptr<AVLNode> node)
 {
 
-std::cout<<"entering left right"<<std::endl; 
+
         std::shared_ptr<AVLNode> a = node; 
         std::shared_ptr<AVLNode> b = a->right_; 
         std::shared_ptr<AVLNode> c = b->left_; 
 
-
-        if (c -> right_ != nullptr) { 
-
+        if (c -> HasRightChild()) { 
             std::shared_ptr<AVLNode> c_ = c -> right_; 
 
             c_ -> parent_.reset(); 
@@ -466,8 +461,7 @@ std::cout<<"entering left right"<<std::endl;
 
         }
 
-        if (c -> right_ == nullptr){ 
-
+        else{ 
             b->parent_.reset(); 
             b->left_ = nullptr; 
 
@@ -476,10 +470,10 @@ std::cout<<"entering left right"<<std::endl;
 
             c->right_ = b; 
             b->parent_ = c; 
-            
-        }
-std::cout<<"exiting left rihg "<<std::endl; 
-		LLrotation(node); 
+		}
+        
+
+		LLrotation(a); 
 
 }
 
@@ -491,7 +485,7 @@ void AVL::RLrotation(std::shared_ptr<AVLNode> node)
         std::shared_ptr<AVLNode> c = b->right_; 
 
 
-        if (c -> left_ != nullptr) { 
+        if (c -> HasLeftChild()) { 
 
             std::shared_ptr<AVLNode> c_ = c -> left_; 
 
@@ -509,7 +503,7 @@ void AVL::RLrotation(std::shared_ptr<AVLNode> node)
 
         }
 
-        if (c -> left_ == nullptr){ 
+        else{ 
 
             b->parent_.reset(); 
             b->right_ = nullptr; 
@@ -522,7 +516,7 @@ void AVL::RLrotation(std::shared_ptr<AVLNode> node)
             
         }
 
-		RRrotation(node); 
+		RRrotation(a); 
 
 }
 
