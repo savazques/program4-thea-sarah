@@ -14,6 +14,9 @@ class BSTNode {
  	void DeleteChild(std::shared_ptr<BSTNode> v);
  	void ReplaceChild(std::shared_ptr<BSTNode> v, std::shared_ptr<BSTNode> u);
 
+    int height;
+  	int balance_factor;
+
  private:
   int key_;
   std::weak_ptr<BSTNode> parent_;
@@ -35,6 +38,8 @@ class BST {
  	bool empty() const;
  	int DeleteMin();
 
+    int UpdateHeightandBalanceFactor (std::shared_ptr<BSTNode>);
+
  private:
 	void DeleteLeaf(std::shared_ptr<BSTNode> currentNode);
 	int DeleteMin(std::shared_ptr<BSTNode> currentNode);
@@ -42,3 +47,11 @@ class BST {
  	std::shared_ptr<BSTNode> root_;
  	size_t size_;
 }; // class BST
+
+
+// todo 
+/*
+- make a print avl tree function for debugging to be used in both the AVL and BST classes 
+- make a function i can change that "does something"
+
+*/

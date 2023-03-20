@@ -79,6 +79,48 @@ void BST::Insert(int key) {
 		lastNode->right_ = std::make_shared<BSTNode>(key, lastNode);
 	}
 	size_++;
+
+    UpdateHeightandBalanceFactor(root_);
+}
+
+int BST :: UpdateHeightandBalanceFactor (std::shared_ptr<BSTNode> node)
+{
+	if(node == nullptr)
+	{
+		return -1; 
+	}
+	if(node -> IsLeaf())
+	{
+		return 0; 
+	}
+	else
+	{
+		int rightHeight = UpdateHeightandBalanceFactor(node->right_); 
+		int leftHeight = UpdateHeightandBalanceFactor(node->left_); 
+		node -> height = std::max(rightHeight, leftHeight) + 1 ; 
+		node -> balance_factor = (rightHeight - leftHeight); 
+		if(std::abs(node->balance_factor) == 2)
+		{
+
+            std::shared_ptr<BSTNode> a = node; 
+            std::shared_ptr<BSTNode> b = a->right_; 
+            std::shared_ptr<BSTNode> c = b->left_; 
+
+            b->parent_.reset(); 
+            b->left_ = nullptr; 
+
+            a->right_ = c; 
+            c->parent_ = a;
+
+            c->right_ = b; 
+            b->parent_ = c; 
+
+        
+
+		}
+	}
+
+	return node -> height;
 }
 
 bool BST::Delete(int key) {
@@ -208,6 +250,36 @@ std::string BST::JSON() const {
 	return result.dump(2) + "\n";
 }
 
+
+// void BST :: doSomething() { 
+
+//     std::shared_ptr<AVLNode> Problemnode = UpdateHeightandBalanceFactor(smt); 
+    
+
+
+// }
+
+
+// 	std::shared_ptr<AVLNode> y = node -> left_; //left child of node 
+// 		std::shared_ptr<AVLNode> parent = node -> parent_.lock(); 
+
+// 		if(y -> right_ != nullptr)
+// 		{
+// 			std::shared_ptr<AVLNode> y_ = y->right_; 
+// 			node->left_ = y_; 
+// 			y -> right_ = node; 
+// 			parent -> left_ = y; 
+// 			y -> parent_ = parent; 
+// 			node -> parent_ = y; 
+// 			y_ -> parent_ = node; 
+// 		}
+// 		else
+// 		{
+// 			y -> right_ = node;
+// 			node -> parent_ = y; 
+// 			parent -> left_ = y; 
+// 			y -> parent_ = parent; 
+// 		}
 
 
 

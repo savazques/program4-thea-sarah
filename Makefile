@@ -18,8 +18,8 @@ BST.o: BST.cpp BST.h
 AVL.o: AVL.cpp AVL.h
 	$(CC) $(DEV) -c AVL.cpp
 
-AVLcommands: AVLcommands.cxx BST.o 
-	$(CC) $(DEV) AVLcommands.cxx  BST.o -o AVLcommands.exe
+AVLcommands: AVLcommands.cxx  AVL.o
+	$(CC) $(CE) AVLcommands.cxx  AVL.o -o AVLcommands.exe
 
 # Build
 .PHONY: clean

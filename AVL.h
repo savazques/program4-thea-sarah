@@ -52,12 +52,14 @@ class AVL{
  	size_t size() const;
  	bool empty() const;
  	int DeleteMin();
-	int UpdateHeightandBalanceFactor(std::shared_ptr<AVLNode> currentNode); 
-    void RotateTree(std::shared_ptr<AVLNode> currentNode); 
+	int UpdateHeightandBalanceFactor(std::shared_ptr<AVLNode>); 
+    void RotateTree(std::shared_ptr<AVLNode> currentNode, int balanceFactor); 
     void RRrotation(std::shared_ptr<AVLNode> currentNode); 
     void RLrotation(std::shared_ptr<AVLNode>currentNode);
 	void LLrotation(std::shared_ptr<AVLNode>currentNode);
 	void LRrotation(std::shared_ptr<AVLNode>currentNode);
+
+    std::shared_ptr<AVLNode> findProblemNode(); 
     
     std::shared_ptr<AVLNode> root_;
  	size_t size_;
